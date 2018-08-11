@@ -16,8 +16,6 @@ LIRI can take in one of the following commands:
 
 - `do-what-it-says`
 
----
-
 #### Examples:
 
 ---
