@@ -2,11 +2,11 @@
 
 ![LIRI App](bsp-create-command-line-program-with-node.png)
 
-## LIRI is a Language Interpretation and Recognition Interface. LIRI will be a command line node app that takes in parameters and gives you back data.
+## LIRI is a Language Interpretation and Recognition Interface. It is a command line Node tool that retrieves, processes and displays the requested information from Twitter, Spotify and OMDB.
 
 ### Technology Stack: Node.js, JavaScript, Twitter API, Spotify API, OMDB API
 
-liri.js can take in one of the following commands:
+LIRI can take in one of the following commands:
 
 - `my-tweets`
 
@@ -15,6 +15,12 @@ liri.js can take in one of the following commands:
 - `movie-this`
 
 - `do-what-it-says`
+
+---
+
+#### Examples:
+
+---
 
 ```
 node liri.js my-tweets
