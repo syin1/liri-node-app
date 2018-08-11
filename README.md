@@ -6,6 +6,8 @@
 
 ### Technology Stack: Node.js, JavaScript, Twitter API, Spotify API, OMDB API
 
+---
+
 LIRI can take in one of the following commands:
 
 - `my-tweets`
