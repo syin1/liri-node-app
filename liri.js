@@ -39,12 +39,42 @@ var getTweets = function() {
   });
 };
 
+var getSongDetails = function() {
+  if (typeof process.argv[3] != 'undefined') {
+    var songName = process.argv[3];
+  } else {
+    var songName = 'The Sign Ace of Base';
+  }
+
+  spotify.search({ type: 'track', query: songName, limit: 1 }, function(
+    err,
+    data
+  ) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+
+    console.log('');
+    console.log("Here's your search result:");
+    console.log('-------------------------');
+    console.log('Artist(s):', data.tracks.items[0].artists[0].name);
+    console.log('Song:', data.tracks.items[0].name);
+    console.log(
+      'Spotify Preview Link:',
+      data.tracks.items[0].external_urls.spotify
+    );
+    console.log('Album:', data.tracks.items[0].album.name);
+    console.log('-------------------------');
+    console.log('');
+  });
+};
+
 switch (command) {
   case 'my-tweets':
     getTweets();
     break;
   case 'spotify-this-song':
-    console.log('Spotify');
+    getSongDetails();
     break;
   case 'movie-this':
     console.log('Movie');
