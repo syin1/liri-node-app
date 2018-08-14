@@ -1,7 +1,7 @@
 require('dotenv').config();
 var Spotify = require('node-spotify-api');
 var Twitter = require('twitter');
-require('request');
+var request = require('request');
 
 var keys = require('./keys.js');
 
@@ -69,6 +69,49 @@ var getSongDetails = function() {
   });
 };
 
+var getMovieDetails = function() {
+  // Store all of the arguments in an array
+  var nodeArgs = process.argv;
+
+  // default movie
+  var movieName = 'Mr.+Nobody';
+
+  for (var i = 3; i < nodeArgs.length; i++) {
+    if (i > 3 && i < nodeArgs.length) {
+      movieName = movieName + '+' + nodeArgs[i];
+    } else {
+      movieName = nodeArgs[i];
+    }
+  }
+
+  // run a request to the OMDB API with the movie specified
+  var queryUrl =
+    'http://www.omdbapi.com/?t=' + movieName + '&y=&plot=short&apikey=trilogy';
+
+  // console.log(queryUrl);
+
+  request(queryUrl, function(error, response, body) {
+    // If the request is successful
+    if (!error && response.statusCode === 200) {
+      console.log('');
+      console.log("Here's your search result:");
+      console.log('-------------------------');
+      console.log('Title: ' + JSON.parse(body).Title);
+      console.log('Year: ' + JSON.parse(body).Year);
+      console.log('IMDB Rating: ' + JSON.parse(body).Ratings[0].Value);
+      console.log(
+        'Rotten Tomatoes Rating: ' + JSON.parse(body).Ratings[1].Value
+      );
+      console.log('Country: ' + JSON.parse(body).Country);
+      console.log('Language: ' + JSON.parse(body).Language);
+      console.log('Plot: ' + JSON.parse(body).Plot);
+      console.log('Actors: ' + JSON.parse(body).Actors);
+      console.log('-------------------------');
+      console.log('');
+    }
+  });
+};
+
 switch (command) {
   case 'my-tweets':
     getTweets();
@@ -77,7 +120,7 @@ switch (command) {
     getSongDetails();
     break;
   case 'movie-this':
-    console.log('Movie');
+    getMovieDetails();
     break;
   case 'do-what-it-says':
     console.log('Do what it says');
