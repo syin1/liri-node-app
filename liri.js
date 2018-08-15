@@ -2,6 +2,7 @@ require('dotenv').config();
 var Spotify = require('node-spotify-api');
 var Twitter = require('twitter');
 var request = require('request');
+var fs = require('fs');
 
 var keys = require('./keys.js');
 
@@ -9,6 +10,7 @@ var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
 var command = process.argv[2];
+var argument = process.argv[3];
 
 var getTweets = function() {
   var params = {
@@ -39,9 +41,9 @@ var getTweets = function() {
   });
 };
 
-var getSongDetails = function() {
-  if (typeof process.argv[3] != 'undefined') {
-    var songName = process.argv[3];
+var getSongDetails = function(argument) {
+  if (typeof argument != 'undefined') {
+    var songName = argument;
   } else {
     var songName = 'The Sign Ace of Base';
   }
@@ -69,19 +71,25 @@ var getSongDetails = function() {
   });
 };
 
-var getMovieDetails = function() {
+var getMovieDetails = function(argument) {
   // Store all of the arguments in an array
-  var nodeArgs = process.argv;
+  // var nodeArgs = process.argv;
 
   // default movie
-  var movieName = 'Mr.+Nobody';
+  // var movieName = 'Mr.+Nobody';
 
-  for (var i = 3; i < nodeArgs.length; i++) {
-    if (i > 3 && i < nodeArgs.length) {
-      movieName = movieName + '+' + nodeArgs[i];
-    } else {
-      movieName = nodeArgs[i];
-    }
+  // for (var i = 3; i < nodeArgs.length; i++) {
+  //   if (i > 3 && i < nodeArgs.length) {
+  //     movieName = movieName + '+' + nodeArgs[i];
+  //   } else {
+  //     movieName = nodeArgs[i];
+  //   }
+  // }
+
+  if (typeof argument != 'undefined') {
+    var movieName = argument;
+  } else {
+    var movieName = 'Mr.+Nobody';
   }
 
   // run a request to the OMDB API with the movie specified
@@ -112,18 +120,45 @@ var getMovieDetails = function() {
   });
 };
 
+var doWhatItSays = function() {
+  // It's important to include the "utf8" parameter or the code will provide stream data (garbage)
+  fs.readFile('random.txt', 'utf8', function(error, data) {
+    if (error) {
+      return console.log(error);
+    }
+
+    var dataArr = data.split(',');
+    var command = dataArr[0];
+    var argument = dataArr[1];
+
+    switch (command) {
+      case 'my-tweets':
+        getTweets();
+        break;
+      case 'spotify-this-song':
+        getSongDetails(argument);
+        break;
+      case 'movie-this':
+        getMovieDetails(argument);
+        break;
+      default:
+        console.log('Command Not Supported!');
+    }
+  });
+};
+
 switch (command) {
   case 'my-tweets':
     getTweets();
     break;
   case 'spotify-this-song':
-    getSongDetails();
+    getSongDetails(argument);
     break;
   case 'movie-this':
-    getMovieDetails();
+    getMovieDetails(argument);
     break;
   case 'do-what-it-says':
-    console.log('Do what it says');
+    doWhatItSays();
     break;
   default:
     console.log('Command Not Supported!');
