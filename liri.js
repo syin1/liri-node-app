@@ -10,7 +10,12 @@ var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
 var command = process.argv[2];
-var argument = process.argv[3];
+var argument = '';
+
+for (var i = 3; i < process.argv.length; i++) {
+  argument = argument + ' ' + process.argv[i];
+}
+argument = argument.trim();
 
 var getTweets = function() {
   var params = {
@@ -42,10 +47,10 @@ var getTweets = function() {
 };
 
 var getSongDetails = function(argument) {
-  if (typeof argument != 'undefined') {
-    var songName = argument;
-  } else {
+  if (argument === '') {
     var songName = 'The Sign Ace of Base';
+  } else {
+    var songName = argument;
   }
 
   spotify.search({ type: 'track', query: songName, limit: 1 }, function(
@@ -72,31 +77,15 @@ var getSongDetails = function(argument) {
 };
 
 var getMovieDetails = function(argument) {
-  // Store all of the arguments in an array
-  // var nodeArgs = process.argv;
-
-  // default movie
-  // var movieName = 'Mr.+Nobody';
-
-  // for (var i = 3; i < nodeArgs.length; i++) {
-  //   if (i > 3 && i < nodeArgs.length) {
-  //     movieName = movieName + '+' + nodeArgs[i];
-  //   } else {
-  //     movieName = nodeArgs[i];
-  //   }
-  // }
-
-  if (typeof argument != 'undefined') {
-    var movieName = argument;
-  } else {
+  if (argument === '') {
     var movieName = 'Mr.+Nobody';
+  } else {
+    var movieName = argument;
   }
 
   // run a request to the OMDB API with the movie specified
   var queryUrl =
     'http://www.omdbapi.com/?t=' + movieName + '&y=&plot=short&apikey=trilogy';
-
-  // console.log(queryUrl);
 
   request(queryUrl, function(error, response, body) {
     // If the request is successful
@@ -128,18 +117,23 @@ var doWhatItSays = function() {
     }
 
     var dataArr = data.split(',');
-    var command = dataArr[0];
-    var argument = dataArr[1];
+    var instruction = dataArr[0];
+    var parameter = '';
 
-    switch (command) {
+    for (var i = 1; i < dataArr.length; i++) {
+      parameter += parameter + ' ' + dataArr[i];
+    }
+    parameter = parameter.trim();
+
+    switch (instruction) {
       case 'my-tweets':
         getTweets();
         break;
       case 'spotify-this-song':
-        getSongDetails(argument);
+        getSongDetails(parameter);
         break;
       case 'movie-this':
-        getMovieDetails(argument);
+        getMovieDetails(parameter);
         break;
       default:
         console.log('Command Not Supported!');
